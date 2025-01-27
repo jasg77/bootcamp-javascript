@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extracción de Enlaces a Imágenes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .result {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Extracción de Enlaces a Imágenes</h1>
+  <textarea id="htmlInput" rows="10" cols="50" placeholder="Pega aquí el contenido HTML"></textarea>
+  <button id="extractButton">Extraer Enlaces a Imágenes</button>
+  <div id="imageLinks" class="result"></div>
+
+  <script>
+    const extraerEnlacesImagenes = (html) => {
+      const regex = /<img[^>]+src="([^">]+)"/g;
+      const enlaces = [];
+      let match;
+      while ((match = regex.exec(html)) !== null) {
+        enlaces.push(match[1]);
+      }
+      return enlaces;
+    };
+
+    document.getElementById('extractButton').addEventListener('click', () => {
+      const html = document.getElementById('htmlInput').value;
+      const enlaces = extraerEnlacesImagenes(html);
+      const resultadoDiv = document.getElementById('imageLinks');
+      resultadoDiv.innerHTML = enlaces.map(enlace => `<p>${enlace}</p>`).join('');
+    });
+  </script>
+</body>
+</html>
