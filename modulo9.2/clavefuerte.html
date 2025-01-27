@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validación de Clave Fuerte</title>
+</head>
+<body>
+  <h1>Validación de Clave Fuerte</h1>
+  <script>
+    // Definición de tipos e interfaces
+    interface ValidacionClave {
+      esValida: boolean;
+      error?: string;
+    }
+
+    type TipoIva =
+      | "general"
+      | "reducido"
+      | "superreducidoA"
+      | "superreducidoB"
+      | "superreducidoC"
+      | "sinIva";
+
+    const commonPasswords: string[] = [
+      "password",
+      "123456",
+      "qwerty",
+      "admin",
+      "letmein",
+      "welcome",
+      "monkey",
+      "sunshine",
+      "password1",
+      "123456789",
+      "football",
+      "iloveyou",
+      "1234567",
+      "123123",
+      "12345678",
+      "abc123",
+      "qwerty123",
+      "1q2w3e4r",
+      "baseball",
+      "password123",
+      "superman",
+      "987654321",
+      "mypass",
+      "trustno1",
+      "hello123",
+      "dragon",
+      "1234",
+      "555555",
+      "loveme",
+      "hello",
+      "hockey",
+      "letmein123",
+      "welcome123",
+      "mustang",
+      "shadow",
+      "12345",
+      "passw0rd",
+      "abcdef",
+      "123abc",
+      "football123",
+      "master",
+      "jordan23",
+      "access",
+      "flower",
+      "qwertyuiop",
+      "admin123",
+      "iloveyou123",
+      "welcome1",
+      "monkey123",
+      "sunshine1",
+      "password12",
+      "1234567890",
+    ];
+
+    // Funciones de validación
+    const tieneMayusculasYMinusculas = (clave: string): ValidacionClave => {
+      const tieneMayuscula = /[A-Z]/.test(clave);
+      const tieneMinuscula = /[a-z]/.test(clave);
+      if (!tieneMayuscula || !tieneMinuscula) {
+        return { esValida: false, error: "La clave debe de tener mayúsculas y minúsculas" };
+      }
+      return { esValida: true };
+    };
+
+    const tieneNumeros = (clave: string): ValidacionClave => {
+      const tieneNumero = /[0-9]/.test(clave);
+      if (!tieneNumero) {
+        return { esValida: false, error: "La clave debe de tener números" };
+      }
+      return { esValida: true };
+    };
+
+    const tieneCaracteresEspeciales = (clave: string): ValidacionClave => {
+      const tieneEspecial = /[@#_+]/.test(clave);
+      if (!tieneEspecial) {
+        return { esValida: false, error: "La clave debe de tener caracteres especiales" };
+      }
+      return { esValida: true };
+    };
+
+    const tieneLongitudMinima = (clave: string): ValidacionClave => {
+      if (clave.length < 8) {
+        return { esValida: false, error: "La clave debe de tener una longitud mínima de 8 caracteres" };
+      }
+      return { esValida: true };
+    };
+
+    const tieneNombreUsuario = (nombreUsuario: string, clave: string): ValidacionClave => {
+      if (clave.includes(nombreUsuario)) {
+        return { esValida: false, error: "La clave no debe tener el nombre del usuario" };
+      }
+      return { esValida: true };
+    };
+
+    const tienePalabrasComunes = (clave: string, commonPasswords: string[]): ValidacionClave => {
+      if (commonPasswords.includes(clave)) {
+        return { esValida: false, error: "La clave no debe de contener palabras comunes" };
+      }
+      return { esValida: true };
+    };
+
+    // Función principal de validación
+    const validarClave = (
+      nombreUsuario: string,
+      clave: string,
+      commonPasswords: string[]
+    ): ValidacionClave => {
+      let validacion = tieneMayusculasYMinusculas(clave);
+      if (!validacion.esValida) return validacion;
+
+      validacion = tieneNumeros(clave);
+      if (!validacion.esValida) return validacion;
+
+      validacion = tieneCaracteresEspeciales(clave);
+      if (!validacion.esValida) return validacion;
+
+      validacion = tieneLongitudMinima(clave);
+      if (!validacion.esValida) return validacion;
+
+      validacion = tieneNombreUsuario(nombreUsuario, clave);
+      if (!validacion.esValida) return validacion;
+
+      validacion = tienePalabrasComunes(clave, commonPasswords);
+      if (!validacion.esValida) return validacion;
+
+      return { esValida: true };
+    };
+
+    // Ejemplo de uso
+    const nombreUsuario = "usuario";
+    const clave = "Usuario123@";
+    const resultado = validarClave(nombreUsuario, clave, commonPasswords);
+    console.log(resultado);
+  </script>
+</body>
+</html>
