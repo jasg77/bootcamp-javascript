@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juego de Memoria</title>
+  <style>
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .carta {
+      width: 100px;
+      height: 150px;
+      background-color: #ccc;
+      cursor: pointer;
+    }
+    .carta img {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <button id="iniciarPartida">Iniciar Partida</button>
+  <div class="grid" id="grid"></div>
+
+  <script>
+    // Modelo
+    class Carta {
+      constructor(idFoto, imagen) {
+        this.idFoto = idFoto;
+        this.imagen = imagen;
+        this.estaVuelta = false;
+        this.encontrada = false;
+      }
+    }
+
+    const infoCartas = [
+      { idFoto: 1, imagen: "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/memo/1.jpg" },
+      { idFoto: 2, imagen: "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/memo/2.jpg" },
+      { idFoto: 3, imagen: "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/memo/3.jpg" },
+      { idFoto: 4, imagen: "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/memo/4.jpg" },
+      { idFoto: 5, imagen: "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/memo/5.jpg" },
+      { idFoto: 6, imagen: "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/memo/6.jpg" }
+    ];
+
+    const crearCartaInicial = (idFoto, imagen) => new Carta(idFoto, imagen);
+
+    const crearColeccionDeCartasInicial = (infoCartas) => {
+      const cartas = [];
+      infoCartas.forEach(infoCarta => {
+        cartas.push(crearCartaInicial(infoCarta.idFoto, infoCarta.imagen));
+        cartas.push(crearCartaInicial(infoCarta.idFoto, infoCarta.imagen));
+      });
+      return cartas;
+    };
+
+    let cartas = crearColeccionDeCartasInicial(infoCartas);
+
+    const EstadoPartida = {
+      PartidaNoIniciada: "PartidaNoIniciada",
+      CeroCartasLevantadas: "CeroCartasLevantadas",
+      UnaCartaLevantada: "UnaCartaLevantada",
+      DosCartasLevantadas: "DosCartasLevantadas",
+      PartidaCompleta: "PartidaCompleta"
+    };
+
+    class Tablero {
+      constructor(cartas) {
+        this.cartas = cartas;
+        this.estadoPartida = EstadoPartida.PartidaNoIniciada;
+        this.indiceCartaVolteadaA = null;
+        this.indiceCartaVolteadaB = null;
+      }
+    }
+
+    let tablero = new Tablero(cartas);
+
+    // Motor
+    const barajarCartas = (cartas) => {
+      for (let i = cartas.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cartas[i], cartas[j]] = [cartas[j], cartas[i]];
+      }
+      return cartas;
+    };
+
+    const sePuedeVoltearLaCarta = (tablero, indice) => {
+      const carta = tablero.cartas[indice];
+      return !carta.encontrada && !carta.estaVuelta && tablero.estadoPartida !== EstadoPartida.DosCartasLevantadas;
+    };
+
+    const voltearLaCarta = (tablero, indice) => {
+      const carta = tablero.cartas[indice];
+      carta.estaVuelta = true;
+      if (tablero.estadoPartida === EstadoPartida.CeroCartasLevantadas) {
+        tablero.estadoPartida = EstadoPartida.UnaCartaLevantada;
+        tablero.indiceCartaVolteadaA = indice;
+      } else if (tablero.estadoPartida === EstadoPartida.UnaCartaLevantada) {
+        tablero.estadoPartida = EstadoPartida.DosCartasLevantadas;
+        tablero.indiceCartaVolteadaB = indice;
+        if (sonPareja(tablero.indiceCartaVolteadaA, tablero.indiceCartaVolteadaB, tablero)) {
+          parejaEncontrada(tablero, tablero.indiceCartaVolteadaA, tablero.indiceCartaVolteadaB);
+        } else {
+          setTimeout(() => {
+            parejaNoEncontrada(tablero, tablero.indiceCartaVolteadaA, tablero.indiceCartaVolteadaB);
+          }, 1000);
+        }
+      }
+    };
+
+    const sonPareja = (indiceA, indiceB, tablero) => {
+      return tablero.cartas[indiceA].idFoto === tablero.cartas[indiceB].idFoto;
+    };
+
+    const parejaEncontrada = (tablero, indiceA, indiceB) => {
+      tablero.cartas[indiceA].encontrada = true;
+      tablero.cartas[indiceB].encontrada = true;
+      tablero.estadoPartida = EstadoPartida.CeroCartasLevantadas;
+      if (esPartidaCompleta(tablero)) {
+        tablero.estadoPartida = EstadoPartida.PartidaCompleta;
+      }
+    };
+
+    const parejaNoEncontrada = (tablero, indiceA, indiceB) => {
+      tablero.cartas[indiceA].estaVuelta = false;
+      tablero.cartas[indiceB].estaVuelta = false;
+      tablero.estadoPartida = EstadoPartida.CeroCartasLevantadas;
+    };
+
+    const esPartidaCompleta = (tablero) => {
+      return tablero.cartas.every(carta => carta.encontrada);
+    };
+
+    const iniciaPartida = (tablero) => {
+      tablero.cartas = barajarCartas(tablero.cartas);
+      tablero.estadoPartida = EstadoPartida.CeroCartasLevantadas;
+    };
+
+    // UI
+    const crearGridDeCartas = (cartas) => {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = ''; // Limpiar el grid antes de crear las cartas
+
+      cartas.forEach((carta, index) => {
+        const divCarta = document.createElement('div');
+        divCarta.className = 'carta';
+        divCarta.setAttribute('data-indice-id', index.toString());
+
+        const imgCarta = document.createElement('img');
+        imgCarta.src = 'https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/memo/reverso.png';
+        imgCarta.setAttribute('data-indice-id', index.toString());
+
+        divCarta.appendChild(imgCarta);
+        grid.appendChild(divCarta);
+
+        divCarta.addEventListener('click', function() {
+          if (sePuedeVoltearLaCarta(tablero, index)) {
+            voltearLaCarta(tablero, index);
+            imgCarta.src = carta.imagen;
+          }
+        });
+      });
+    };
+
+    document.getElementById('iniciarPartida').addEventListener('click', function() {
+      iniciaPartida(tablero);
+      crearGridDeCartas(tablero.cartas);
+    });
+
+    // Inicializar el juego
+    crearGridDeCartas(cartas);
+  </script>
+</body>
+</html>
