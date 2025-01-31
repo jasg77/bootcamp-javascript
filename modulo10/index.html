@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mortadelo y Filemón - Personajes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .personaje {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .personaje img {
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Personajes de Mortadelo y Filemón</h1>
+  <form id="busquedaForm">
+    <input type="text" id="nombreInput" placeholder="Buscar por nombre">
+    <button type="submit">Filtrar</button>
+  </form>
+  <div id="personajesContainer"></div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/personajes';
+
+    const fetchPersonajes = async (nombre = '') => {
+      const response = await fetch(`${API_URL}?nombre_like=${nombre}`);
+      const personajes = await response.json();
+      return personajes;
+    };
+
+    const mostrarPersonajes = (personajes) => {
+      const container = document.getElementById('personajesContainer');
+      container.innerHTML = '';
+      personajes.forEach(personaje => {
+        const personajeDiv = document.createElement('div');
+        personajeDiv.className = 'personaje';
+        const imagenUrl = `http://localhost:3000/${personaje.imagen}`;
+        personajeDiv.innerHTML = `
+          <img src="${imagenUrl}" alt="${personaje.nombre}">
+          <div>
+            <h2>${personaje.nombre}</h2>
+            <p>${personaje.apodo}</p>
+          </div>
+        `;
+        container.appendChild(personajeDiv);
+      });
+    };
+
+    const cargarPersonajes = async (nombre = '') => {
+      const personajes = await fetchPersonajes(nombre);
+      mostrarPersonajes(personajes);
+    };
+
+    document.getElementById('busquedaForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const nombre = document.getElementById('nombreInput').value;
+      cargarPersonajes(nombre);
+    });
+
+    // Cargar todos los personajes al cargar la página
+    cargarPersonajes();
+  </script>
+</body>
+</html>
