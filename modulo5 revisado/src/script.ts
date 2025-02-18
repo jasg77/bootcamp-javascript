@@ -77,5 +77,17 @@ document.addEventListener("DOMContentLoaded", () => {
     actualizarMensaje("");
   });
 
+  document.getElementById("saber-que-habria-pasado")?.addEventListener("click", () => {
+    if (juegoTerminado) {
+      let mensaje = "Habrías sacado estas cartas adicionales:";
+      while (puntuacion <= 7.5) {
+        const carta = dameCarta();
+        mensaje += ` ${carta.valor}`;
+        puntuacion += carta.valor;
+      }
+      actualizarMensaje(mensaje);
+    }
+  });
+
   muestraPuntuacion();
 });

@@ -1,0 +1,37 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+#game-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+#game-board img {
+  width: 200px;
+  height: 300px;
+  margin-bottom: 20px;
+}
+
+#puntuacion {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+#mensaje {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: red;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin: 5px;
+  cursor: pointer;
+}
