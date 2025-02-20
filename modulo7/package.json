@@ -1,20 +1,14 @@
 {
-  "name": "ts-sandbox",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "modulo7-testing-laboratorio",
+  "version": "1.0.0",
+  "description": "Pruebas unitarias para el juego de la siete y media",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "test": "vitest"
+  },
+  "dependencies": {
+    "typescript": "^4.5.5"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.0",
-    "typescript": "^4.9.3",
-    "vite": "^4.1.0",
-    "vite-plugin-checker": "^0.5.6",
-    "vitest": "^0.29.8"
+    "vitest": "^0.0.118"
   }
 }
