@@ -1,0 +1,13 @@
+{
+  "name": "siete-y-media",
+  "version": "1.0.0",
+  "description": "Juego de las Siete y Media",
+  "main": "dist/main.js",
+  "scripts": {
+      "build": "tsc"
+  },
+  "dependencies": {},
+  "devDependencies": {
+      "typescript": "^4.0.0"
+  }
+}
