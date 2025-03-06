@@ -129,30 +129,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const botonPedirCarta = document.getElementById("drawCard");
-    if (botonPedirCarta && botonPedirCarta instanceof HTMLButtonElement) {
-        botonPedirCarta.addEventListener("click", () => {
-            if (!juegoTerminado) {
-                pedirCarta();
-            }
-        });
-    }
+if (botonPedirCarta !== null && botonPedirCarta !== undefined && botonPedirCarta instanceof HTMLButtonElement) {
+    botonPedirCarta.addEventListener("click", () => {
+        if (!juegoTerminado) {
+            pedirCarta();
+        }
+    });
+}
+
 
     const botonMePlanto = document.getElementById("stand");
-    if (botonMePlanto && botonMePlanto instanceof HTMLButtonElement) {
-        botonMePlanto.addEventListener("click", () => {
-            if (puntuacion < 4) {
-                actualizarMensaje("Has sido muy conservador");
-            } else if (puntuacion === 5) {
-                actualizarMensaje("Te ha entrado el canguelo eh?");
-            } else if (puntuacion >= 6 && puntuacion < 7.5) {
-                actualizarMensaje("Casi casi...");
-            } else if (puntuacion === 7.5) {
-                actualizarMensaje("¡Lo has clavado! ¡Enhorabuena!");
-            }
-            juegoTerminado = true;
-            comprobarPartida();
-        });
-    }
+if (botonMePlanto !== null && botonMePlanto !== undefined && botonMePlanto instanceof HTMLButtonElement) {
+    botonMePlanto.addEventListener("click", () => {
+        if (puntuacion < 4) {
+            actualizarMensaje("Has sido muy conservador");
+        } else if (puntuacion === 5) {
+            actualizarMensaje("Te ha entrado el canguelo eh?");
+        } else if (puntuacion >= 6 && puntuacion < 7.5) {
+            actualizarMensaje("Casi casi...");
+        } else if (puntuacion === 7.5) {
+            actualizarMensaje("¡Lo has clavado! ¡Enhorabuena!");
+        }
+        juegoTerminado = true;
+        comprobarPartida();
+    });
+}
+
 
     document.getElementById("newGame")?.addEventListener("click", () => {
         puntuacion = 0;
